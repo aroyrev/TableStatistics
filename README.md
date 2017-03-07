@@ -1,5 +1,12 @@
 # Inspecting User Table and Index Statistics
 
+1. [Introduction](#introduction)
+2. [UserTableStats](#usertablestats)
+3. [Initialization](#initialization)
+4. [Retrieving statistics](#retrieving-statistics)
+5. [Sample output](#sample-output)
+6. [Known issues](#known-issues)
+
 ## Introduction
 
 The number of records accessed (read, update, create and delete) during a backend operation is one significant factor that a software developer can influence during development time. The number of records accessed very often provides more constant insight into the final system performance than looking at a stop watch. Developers can influence the number of records read for instance through database queries and the resulting index selection or by extensive aggregation of database records into Business Entity result sets, e.g. in calculated fields.
@@ -17,7 +24,7 @@ for details.
 
 The class Consultingwerk.OERA.TableStatistics.UserTableStats provides a simple way of returning the number of accessed database records and index blocks. Once instantiated the class will return the record and index statstics of the current AVM session since its initialization or the last call into the GetTableIndexStats method. Results are returned in two temp-tables. The usage-sample.p showcases using the class for two queries against the sports2000 demo database. 
 
-## Initialization
+### Initialization
 
 The code initializes and array of UserTableStats instances, with one instance per connected database:
 
@@ -60,6 +67,8 @@ PROCEDURE InitializeUserTableStats:
     
 END PROCEDURE .   
 ```
+
+### Retrieving statistics
 
 After each query executed, we can output the table access and index access statistics by executing the DumpUserTableStats procedure:
 
