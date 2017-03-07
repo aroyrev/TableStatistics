@@ -149,3 +149,9 @@ Index Name                                   Index Reads                        
 sports2000.Salesrep.SalesRep                          13                               0               0
 ########################################################################################################
 ```
+
+## Known issues
+
+Due to bug PSC00355668 present at least in OpenEdge 11.6.3 access to BLOB or CLOB fields may be reported as record access to completely unrelated tables. In our tests, the Sports2000.SalesRep table was enhanced with two BLOB fields and accessing those BLOB's resulted in reads reported for the Department and Employee table. 
+
+Progress has confirmed the bug. 
