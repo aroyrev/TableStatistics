@@ -50,16 +50,12 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
     DEFINE VARIABLE iFirstTblId   AS INTEGER NO-UNDO .
     DEFINE VARIABLE iLastTblId    AS INTEGER NO-UNDO .
 
-/*    DEFINE VARIABLE iTblBase      AS INTEGER NO-UNDO .*/
     DEFINE VARIABLE iTblRange     AS INTEGER NO-UNDO .
-    DEFINE VARIABLE iTblUsed      AS INTEGER NO-UNDO .
 
     DEFINE VARIABLE iFirstIdxId   AS INTEGER NO-UNDO .
     DEFINE VARIABLE iLastIdxId    AS INTEGER NO-UNDO .
 
-/*    DEFINE VARIABLE iIdxBase      AS INTEGER NO-UNDO .*/
     DEFINE VARIABLE iIdxRange     AS INTEGER NO-UNDO .
-    DEFINE VARIABLE iIdxUsed      AS INTEGER NO-UNDO .
 
     {Consultingwerk/OERA/TableStatistics/ttUserStats.i}
 
@@ -132,25 +128,16 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
     METHOD PUBLIC VOID GetTableIndexStats (OUTPUT TABLE tt_usrTblInfo,
                                            OUTPUT TABLE tt_usrIdxInfo):
 
-        DEFINE VARIABLE t AS INTEGER NO-UNDO.
-        DEFINE VARIABLE i AS INTEGER NO-UNDO.
-
         DEFINE VARIABLE dtStart AS DATETIME-TZ INITIAL NOW NO-UNDO .
 
         IF cCustomLogEntryType > "":U THEN
             LOG-MANAGER:WRITE-MESSAGE (SUBSTITUTE ("GetTableIndexStats DB: &1 Calculating Statistics since last run":U, cDatabaseName),
                                        cCustomLogEntryType) .
 
-        t  = 0.
-
         tblLoop:
         FOR EACH dictdb._userTableStat NO-LOCK WHERE _UserTableStat-Id >= iFirstTblId
                                                  AND _UserTableStat-Id <= iLastTblId
             ON ERROR UNDO, THROW:
-
-          t = t + 1.
-          IF t > iTblUsed THEN
-              LEAVE tblLoop .
 
           FIND tt_usrTblInfoX WHERE tt_usrTblInfoX.xId = _userTableStat-id NO-ERROR.
 
@@ -197,16 +184,10 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
 
         dtStart = NOW .
 
-        i = 0.
-
         idxLoop:
         FOR EACH dictdb._userIndexStat NO-LOCK WHERE _UserIndexStat-id >= iFirstIdxId
                                                  AND _userIndexStat-id <= iLastIdxId
             ON ERROR UNDO, THROW:
-
-          i = i + 1.
-          IF i > iIdxUsed THEN
-            LEAVE idxLoop.
 
           FIND tt_usrIdxInfoX WHERE tt_usrIdxInfoX.xId = _UserIndexStat-id NO-ERROR.
           IF AVAILABLE tt_usrIdxInfoX THEN
@@ -316,51 +297,26 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
          *
          */
 
-/*        FIND FIRST dictdb._tableStat NO-LOCK NO-ERROR .*/
-/*        iTblBase = RECID (dictdb._tableStat).          */
-
         FIND LAST dictdb._tableStat NO-LOCK NO-ERROR .
         iTblRange = RECID (dictdb._tableStat).
 
-        ASSIGN iTblUsed = 0.
-
-        FOR EACH dictdb._tablestat NO-LOCK
-            ON ERROR UNDO, THROW:
-
-            FIND FIRST dictdb._file NO-LOCK WHERE _file-num = _tablestat-id NO-ERROR.
-            IF AVAILABLE (dictdb._file) THEN
-                iTblUsed = iTblUsed + 1.
-        END.
-
         ASSIGN
           iFirstTblId = iUserNum * iTblRange
-          iLastTblId  = iFirstTblId + MINIMUM (iTblRange, iTblUsed)
+          iLastTblId  = iFirstTblId + iTblRange
           iFirstTblId = iFirstTblId + 1
         .
 
         /* how many indexes are there?  what are the starting and ending offsets?
          */
 
-/*        FIND FIRST dictdb._indexStat NO-LOCK NO-ERROR .*/
-/*        iIdxBase = RECID (dictdb._indexStat).          */
-
         FIND LAST dictdb._indexStat NO-LOCK NO-ERROR .
         iIdxRange = RECID (dictdb._indexStat).
 
-        iIdxUsed = 0.
-
-        FOR EACH dictdb._indexStat NO-LOCK
-            ON ERROR UNDO, THROW:
-
-            FIND FIRST dictdb._index NO-LOCK WHERE _idx-num = _indexStat-id NO-ERROR.
-            IF AVAILABLE( dictdb._index ) THEN
-                iIdxUsed = iIdxUsed + 1.
-        END.
-
         ASSIGN
             iFirstIdxId = iUserNum * iIdxRange
-            iLastIdxId  = iFirstIdxId + MINIMUM (iIdxRange, iIdxUsed)
-            iFirstIdxId = iFirstIdxId + 1 .
+          iLastIdxId  = iFirstIdxId + iIdxRange
+          iFirstIdxId = iFirstIdxId + 1
+        .
 
         /* initialize user stats */
         THIS-OBJECT:GetTableIndexStats (OUTPUT TABLE tt_usrTblInfo,
