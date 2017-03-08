@@ -50,14 +50,12 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
     DEFINE VARIABLE iFirstTblId   AS INTEGER NO-UNDO .
     DEFINE VARIABLE iLastTblId    AS INTEGER NO-UNDO .
 
-/*    DEFINE VARIABLE iTblBase      AS INTEGER NO-UNDO .*/
     DEFINE VARIABLE iTblRange     AS INTEGER NO-UNDO .
     DEFINE VARIABLE iTblUsed      AS INTEGER NO-UNDO .
 
     DEFINE VARIABLE iFirstIdxId   AS INTEGER NO-UNDO .
     DEFINE VARIABLE iLastIdxId    AS INTEGER NO-UNDO .
 
-/*    DEFINE VARIABLE iIdxBase      AS INTEGER NO-UNDO .*/
     DEFINE VARIABLE iIdxRange     AS INTEGER NO-UNDO .
     DEFINE VARIABLE iIdxUsed      AS INTEGER NO-UNDO .
 
@@ -340,9 +338,6 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
 
         /* how many indexes are there?  what are the starting and ending offsets?
          */
-
-/*        FIND FIRST dictdb._indexStat NO-LOCK NO-ERROR .*/
-/*        iIdxBase = RECID (dictdb._indexStat).          */
 
         FIND LAST dictdb._indexStat NO-LOCK NO-ERROR .
         iIdxRange = RECID (dictdb._indexStat).
