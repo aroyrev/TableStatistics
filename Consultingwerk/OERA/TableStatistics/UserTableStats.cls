@@ -135,42 +135,42 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
                                        cCustomLogEntryType) .
 
         tblLoop:
-        FOR EACH dictdb._userTableStat NO-LOCK WHERE _UserTableStat-Id >= iFirstTblId
-                                                 AND _UserTableStat-Id <= iLastTblId
+        FOR EACH dictdb._userTableStat NO-LOCK WHERE dictdb._userTableStat._UserTableStat-Id >= iFirstTblId
+                                                 AND dictdb._userTableStat._UserTableStat-Id <= iLastTblId
             ON ERROR UNDO, THROW:
 
-          FIND tt_usrTblInfoX WHERE tt_usrTblInfoX.xId = _userTableStat-id NO-ERROR.
+          FIND tt_usrTblInfoX WHERE tt_usrTblInfoX.xId = dictdb._userTableStat._userTableStat-id NO-ERROR.
 
           IF AVAILABLE tt_usrTblInfoX THEN
             ASSIGN
 
-              tt_usrTblInfoX.tblRd[2] = _userTableStat-read   - tt_usrTblInfoX.tblRd[1]
-              tt_usrTblInfoX.tblRd[1] = _userTableStat-read
+              tt_usrTblInfoX.tblRd[2] = dictdb._userTableStat._userTableStat-read   - tt_usrTblInfoX.tblRd[1]
+              tt_usrTblInfoX.tblRd[1] = dictdb._userTableStat._userTableStat-read
 
-              tt_usrTblInfoX.tblCr[2] = _userTableStat-create - tt_usrTblInfoX.tblCr[1]
-              tt_usrTblInfoX.tblCr[1] = _userTableStat-create
+              tt_usrTblInfoX.tblCr[2] = dictdb._userTableStat._userTableStat-create - tt_usrTblInfoX.tblCr[1]
+              tt_usrTblInfoX.tblCr[1] = dictdb._userTableStat._userTableStat-create
 
-              tt_usrTblInfoX.tblUp[2] = _userTableStat-update - tt_usrTblInfoX.tblUp[1]
-              tt_usrTblInfoX.tblUp[1] = _userTableStat-update
+              tt_usrTblInfoX.tblUp[2] = dictdb._userTableStat._userTableStat-update - tt_usrTblInfoX.tblUp[1]
+              tt_usrTblInfoX.tblUp[1] = dictdb._userTableStat._userTableStat-update
 
-              tt_usrTblInfoX.tblDl[2] = _userTableStat-delete - tt_usrTblInfoX.tblDl[1]
-              tt_usrTblInfoX.tblDl[1] = _userTableStat-delete
+              tt_usrTblInfoX.tblDl[2] = dictdb._userTableStat._userTableStat-delete - tt_usrTblInfoX.tblDl[1]
+              tt_usrTblInfoX.tblDl[1] = dictdb._userTableStat._userTableStat-delete
             .
            ELSE
             DO:
-              FIND FIRST dictdb._file NO-LOCK WHERE _file-num = _userTableStat-num NO-ERROR.
+              FIND FIRST dictdb._file NO-LOCK WHERE _file._file-number = dictdb._userTableStat._userTableStat-num NO-ERROR.
               IF NOT AVAILABLE dictdb._file THEN
                     NEXT tblLoop .
 
               CREATE tt_usrTblInfoX.
               ASSIGN
-                tt_usrTblInfoX.xId      = _userTableStat-id
-                tt_usrTblInfoX.tblNum   = _file-num
-                tt_usrTblInfoX.tblName  = _file-name
-                tt_usrTblInfoX.tblRd[1] = _userTableStat-read
-                tt_usrTblInfoX.tblCr[1] = _userTableStat-create
-                tt_usrTblInfoX.tblUp[1] = _userTableStat-update
-                tt_usrTblInfoX.tblDl[1] = _userTableStat-delete
+                tt_usrTblInfoX.xId      = dictdb._userTableStat._userTableStat-id
+                tt_usrTblInfoX.tblNum   = _file._file-number
+                tt_usrTblInfoX.tblName  = _file._file-name
+                tt_usrTblInfoX.tblRd[1] = dictdb._userTableStat._userTableStat-read
+                tt_usrTblInfoX.tblCr[1] = dictdb._userTableStat._userTableStat-create
+                tt_usrTblInfoX.tblUp[1] = dictdb._userTableStat._userTableStat-update
+                tt_usrTblInfoX.tblDl[1] = dictdb._userTableStat._userTableStat-delete
               .
             END.
 
@@ -185,24 +185,24 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
         dtStart = NOW .
 
         idxLoop:
-        FOR EACH dictdb._userIndexStat NO-LOCK WHERE _UserIndexStat-id >= iFirstIdxId
-                                                 AND _userIndexStat-id <= iLastIdxId
+        FOR EACH dictdb._userIndexStat NO-LOCK WHERE _userIndexStat._UserIndexStat-id >= iFirstIdxId
+                                                 AND _userIndexStat._userIndexStat-id <= iLastIdxId
             ON ERROR UNDO, THROW:
 
-          FIND tt_usrIdxInfoX WHERE tt_usrIdxInfoX.xId = _UserIndexStat-id NO-ERROR.
+          FIND tt_usrIdxInfoX WHERE tt_usrIdxInfoX.xId = _userIndexStat._UserIndexStat-id NO-ERROR.
           IF AVAILABLE tt_usrIdxInfoX THEN
               ASSIGN
-                  tt_usrIdxInfoX.idxRd[2]  = _userIndexStat-read   - tt_usrIdxInfoX.idxRd[1]
-                  tt_usrIdxInfoX.idxRd[1]  = _userIndexStat-read
+                  tt_usrIdxInfoX.idxRd[2]  = _userIndexStat._userIndexStat-read   - tt_usrIdxInfoX.idxRd[1]
+                  tt_usrIdxInfoX.idxRd[1]  = _userIndexStat._userIndexStat-read
 
-                  tt_usrIdxInfoX.idxCr[2]  = _userIndexStat-create - tt_usrIdxInfoX.idxCr[1]
-                  tt_usrIdxInfoX.idxCr[1]  = _userIndexStat-create
+                  tt_usrIdxInfoX.idxCr[2]  = _userIndexStat._userIndexStat-create - tt_usrIdxInfoX.idxCr[1]
+                  tt_usrIdxInfoX.idxCr[1]  = _userIndexStat._userIndexStat-create
 
-                  tt_usrIdxInfoX.idxDl[2]  = _userIndexStat-delete - tt_usrIdxInfoX.idxDl[1]
-                  tt_usrIdxInfoX.idxDl[1]  = _userIndexStat-delete .
+                  tt_usrIdxInfoX.idxDl[2]  = _userIndexStat._userIndexStat-delete - tt_usrIdxInfoX.idxDl[1]
+                  tt_usrIdxInfoX.idxDl[1]  = _userIndexStat._userIndexStat-delete .
            ELSE
             DO:
-              FIND FIRST dictdb._index NO-LOCK WHERE _idx-num = _UserIndexStat-num NO-ERROR.
+              FIND FIRST dictdb._index NO-LOCK WHERE _index._idx-num = _userIndexStat._UserIndexStat-num NO-ERROR.
 
               IF AVAILABLE dictdb._index THEN
                   FIND FIRST dictdb._file NO-LOCK WHERE RECID (dictdb._file) = dictdb._index._file-recid NO-ERROR.
@@ -212,12 +212,12 @@ CLASS Consultingwerk.OERA.TableStatistics.UserTableStats:
 
               CREATE tt_usrIdxInfoX.
               ASSIGN
-                tt_usrIdxInfoX.xId      = _userIndexStat-id
-                tt_usrIdxInfoX.idxNum   = _UserIndexStat-num
-                tt_usrIdxInfoX.idxName  = SUBSTITUTE ("&1.&2":U, _file-name, _index-name )
-                tt_usrIdxInfoX.idxRd[1] = _userIndexStat-read
-                tt_usrIdxInfoX.idxCr[1] = _userIndexStat-create
-                tt_usrIdxInfoX.idxDl[1] = _userIndexStat-delete
+                tt_usrIdxInfoX.xId      = _userIndexStat._userIndexStat-id
+                tt_usrIdxInfoX.idxNum   = _userIndexStat._UserIndexStat-num
+                tt_usrIdxInfoX.idxName  = SUBSTITUTE ("&1.&2":U, _file._file-name, _index._index-name )
+                tt_usrIdxInfoX.idxRd[1] = _userIndexStat._userIndexStat-read
+                tt_usrIdxInfoX.idxCr[1] = _userIndexStat._userIndexStat-create
+                tt_usrIdxInfoX.idxDl[1] = _userIndexStat._userIndexStat-delete
               .
             END.
         END.
